@@ -9,13 +9,16 @@ from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
 
 api = Blueprint('api', __name__)
-app = Flask(__name__)
 
-app.config["JWT_SECRETE_KEY"] = "A*SJR*89432Jk1l2@"
-jwt = JWTManager(app)
+api.config["JWT_SECRETE_KEY"] = "A*SJR*89432Jk1l2@"
+jwt = JWTManager(api)
 
 # Allow CORS requests to this API
 CORS(api)
+
+@api.route('/')
+def sitemap():
+    return generate_sitemap(api)
 
 
 @api.route('/signup', methods=['POST'])
