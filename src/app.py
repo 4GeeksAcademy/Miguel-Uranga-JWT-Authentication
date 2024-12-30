@@ -6,6 +6,7 @@ from flask import Flask, request, jsonify, url_for, send_from_directory
 from flask_jwt_extended import JWTManager
 from flask_migrate import Migrate
 from flask_swagger import swagger
+from flask_bcrypt import Bcrypt
 from api.utils import APIException, generate_sitemap
 from api.models import db
 from api.routes import api
@@ -35,6 +36,11 @@ db.init_app(app)
 # Setup the Flask-JWT-Extended extension
 app.config["JWT_SECRET_KEY"] = "super-secret"  # Change this "super secret" to something else!
 jwt = JWTManager(app)
+
+#Creacion del bcrypt
+bcrypt = Bcrypt(app)
+app.bcrypt = bcrypt
+
 
 # add the admin
 setup_admin(app)

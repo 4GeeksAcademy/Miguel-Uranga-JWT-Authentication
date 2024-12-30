@@ -19,30 +19,34 @@ const imgStyle = {
 
 
 export const UserLogin = () => {
+    let navigate = useNavigate()
+    let response = {}
     const { store, actions } = useContext(Context);
-    const {data, setData} = useState({
-            "username": "",
-            "password": "",
-            "is_active": true,
-            "first_name": "",
-            "last_name": ""
-    });
+    const [data, setData] = useState({
+        username: "",
+        password: "",
+      });
+
 
     //getting the user values
     const inpuntHandling = e => {
+        e.preventDefault()
         const {name, value} = e.target;
         setData(prevInfo => (
             {
                 ...prevInfo, [name]:value
             }));
-        console.log("AAAAA");
+        console.log(data);
     }
+    // useEffect(
 
+    // ,[response]) 
 
-    const loginUserHandling = (e) => {
+    const loginUserHandling = async(e) => {
         e.preventDefault()
-        actions.loginAccount(data.username, data.password)
-        return -1
+        let response = await actions.loginAccount(data.username, data.password)
+        console.log(response)
+        response.msg ? alert(response.msg): navigate("/user")
     }
 
     return (

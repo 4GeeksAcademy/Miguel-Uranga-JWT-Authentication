@@ -1,3 +1,5 @@
+import { RegisterUser } from "../pages/signup";
+
 const getState = ({ getStore, getActions, setStore }) => {
 	return {
 		store: {
@@ -24,40 +26,59 @@ const getState = ({ getStore, getActions, setStore }) => {
 			loginAccount: async (username, password) => {
 				try{
 					// fetching data from the backend
-					const resp = await fetch(process.env.BACKEND_URL + "/api/login", {
+					const response = await fetch(process.env.BACKEND_URL + "/api/login", {
 						method: "POST",
 						headers: {
 							"Content-type": "application/json"
 						},
-						body: JSON.stringify({"username": username, "password": password})
+						body: JSON.stringify({
+							username: username,
+							password: password
+						})
 					})
-					if (!Response.ok){
-						throw new Error("Failed login attempt")
-					}
-
-					const data = await resp.json()
-
-					localStorage.setItem("accessToken", data.access_token)
-					console.log(data)
 					
+					// if (!response.ok){
+					// 	const errorMsg = await response.json()
+					//  	throw new Error(errorMsg.msg)
+					// }
+
+					const data = await response.json()
+					console.log(data)
+
+					localStorage.setItem("access_token", data.token)
+					localStorage.setItem("username", data.username)
+
 					return data;
 				}catch(error){
 					console.log("Error loading message from backend", error)
+					return error
 				}
 			},
-			changeColor: (index, color) => {
-				//get the store
-				const store = getStore();
+			registerUser: async (userInfo) => {
+				//Post the user data
+				let msgError = ""
+				try {
+					const response = await fetch(process.env.BACKEND_URL + "/api/signup", {
+						method: "POST",
+						headers: {
+							"Content-type": "application/json"
+						},
+						body: JSON.stringify({
+							username: userInfo.username,
+							password: userInfo.password,
+							first_name: userInfo.first_name,
+							last_name: userInfo.last_name
+						})
+					})
+					const data = await response.json()
 
-				//we have to loop the entire demo array to look for the respective index
-				//and change its color
-				const demo = store.demo.map((elm, i) => {
-					if (i === index) elm.background = color;
-					return elm;
-				});
+					console.log(data)
+					return data;
+				}
+				catch(error){
+					console.log(response)
+				}
 
-				//reset the global store
-				setStore({ demo: demo });
 			}
 		}
 	};

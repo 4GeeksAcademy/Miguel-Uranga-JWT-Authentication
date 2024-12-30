@@ -2,7 +2,7 @@
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
 import os, json
-from flask import Flask, request, jsonify, url_for, Blueprint
+from flask import Flask, request, jsonify, url_for, Blueprint, current_app
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity, JWTManager
 from api.models import db, User
 from api.utils import generate_sitemap, APIException
@@ -27,7 +27,7 @@ def user_signup():
     response_body = json.loads(request.data)
     new_User = User(
         username = response_body["username"],
-        password = response_body["password"],
+        password = current_app.bcrypt.generate_password_hash(response_body["password"]).decode('utf-8'),
         is_active = True,
         first_name = response_body["first_name"],
         last_name = response_body["last_name"]
@@ -38,6 +38,7 @@ def user_signup():
     
 
     user = User.query.filter_by(username=new_User.username).first()
+
     if user:
         return jsonify({"msg": "This user already exists"}), 401
 
@@ -45,7 +46,7 @@ def user_signup():
     db.session.commit()
     serialized_user = new_User.serialize()
 
-    return jsonify({"msg": f"Created user: {serialized_user}"}), 200
+    return jsonify({"User_created": f"Created user: {serialized_user}"}), 200
 
 #Creation of the JWT authentication token 
 @api.route("/login", methods = ["POST"])
@@ -53,9 +54,14 @@ def token_generation():
     username = request.json.get("username", None)
     password = request.json.get("password", None)
 
-    user = User.query.filter_by(username=username, password=password).first()
+    user = User.query.filter_by(username=username).first()
 
     if not user:
+        return jsonify({"msg": "There was an error. Incorrect username or password"}), 401
+    
+    valid_password = current_app.bcrypt.check_password_hash(user.password, password)
+
+    if not valid_password:
         return jsonify({"msg": "There was an error. Incorrect username or password"}), 401
     
     access_token = create_access_token(identity=username)

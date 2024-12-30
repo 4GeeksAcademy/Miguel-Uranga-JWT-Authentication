@@ -9,6 +9,7 @@ import {RegisterUser} from "./pages/signup"
 import {UserLogin} from "./pages/login"
 import { Single } from "./pages/single";
 import { SuccessfulRegister } from "./pages/successful";
+import {User} from "./pages/user"
 import injectContext from "./store/appContext";
 
 import { Navbar } from "./component/navbar";
@@ -28,14 +29,11 @@ const Layout = () => {
                 <ScrollToTop>
                     <Navbar />
                     <Routes>
-                        <Route element={<Home />} path="/" />
-                        <Route element={<Demo />} path="/demo" />
-                        <Route element={<Single />} path="/single/:theid" />
+                        <Route element={<UserLogin/>} path="/" />
                         <Route element={<RegisterUser/>} path="/signup" />
                         <Route element={<UserLogin/>} path="/login" />
                         <Route element={<SuccessfulRegister/>} path="/successful" />
-
-                        {/* <Route element={<User/>} path="/private" /> */}
+                        <Route element={<User/>} path="/user" /> 
                         <Route element={<h1>Not found!</h1>} />
                     </Routes>
                     <Footer />

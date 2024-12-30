@@ -1,70 +1,69 @@
-import React, { useContext} from "react";
+import React, { useState, useContext} from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {Context} from '../store/appContext.js'
 
 
 export const RegisterUser = () => {
-    const userInfo = {
+    const [userInfo, setUserInfo] = useState({
         username:  "",
         password: "",
+        repeatPassword: "",
         is_active: true,
         first_name: "",
         last_name: "",
-    }
-    let repeatPassword = "";
+    })
+
     const navigate = useNavigate();
     const { store, actions } = useContext(Context);
-    const registerUser = (userInfo) =>{
-        if (repeatPassword != userInfo.password){
-            alert("Please confirm your password.")
+    
+    const userInfoSubmit = async e =>{
+        let response = ""
+
+        e.preventDefault()
+        if (userInfo.repeatPassword != userInfo.password){
+            alert("The passwords do not match")
             return -1
         }
         if (userInfo.name == "" && userInfo.password == "" && userInfo.first_name == "" && userInfo.last_name == ""){
             alert("Please fill all the required fields.")
             return -1
         }
-        //actions.AddContact(userInfo)
-        //alert("Successfully added "+ userInfo.name + "!")
-        navigate("/successful")
+        response = await actions.registerUser(userInfo)
+        response.msg ? alert(response.msg): navigate("/successful")
+         
+    }
+
+    const inpuntHandling = e => {
+        e.preventDefault()
+        const {name, value} = e.target;
+        setUserInfo(prevInfo => (
+            {
+                ...prevInfo, [name]:value
+            }));
     }
 
     return (
         <div className='container-fluid w-75 mt-5'>
-            <form className="row g-3 needs-validation" novalidate>
+            <form className="row g-3 needs-validation" onSubmit={userInfoSubmit} novalidate>
                 <label for="full_Name" className="form-label fw-bold text-light">Username</label>
                 <div className="input-group mb-3">
                     <input type="text" className="form-control" placeholder="Enter your username" aria-label="Username" id="full_Name" required
-                        onChange={
-                        e=> {
-                            userInfo.username = e.target.value
-                            //console.log(userInfo.name)
-                        }
-                        }
+                        name = "username" value= {userInfo.username}  onChange={inpuntHandling}
                     />
                     <div className="valid-feedback"></div>
                 </div>
                 <label for="password" className="form-label fw-bold text-light">Password</label>
                 <div className="input-group mb-3">
                     <input type="password" className="form-control" placeholder="Enter password" aria-label="Username" id="email" required
-                        onChange={
-                            e=> {
-                            userInfo.password = e.target.value
-                            console.log(userInfo.password)
-                            }
-                        }
+                        name = "password" value= {userInfo.password}  onChange={inpuntHandling}
                     />
                     <div className="valid-feedback"></div>
                 </div>
 
                 <label for="password" className="form-label fw-bold text-light">Repeat password</label>
                 <div className="input-group mb-3">
-                    <input type="password" className="form-control" placeholder="Enter password" aria-label="Username" id="email" required
-                        onChange={
-                            e=> {
-                            repeatPassword = e.target.value
-                            console.log(repeatPassword)
-                            }
-                        }
+                    <input type="password" className="form-control" placeholder="Enter password" aria-label="Username" id="password" required
+                        name = "repeatPassword" value= {userInfo.repeatPassword}  onChange={inpuntHandling}
                     />
                     <div className="valid-feedback"></div>
                 </div>
@@ -72,12 +71,7 @@ export const RegisterUser = () => {
                 <label for="First name" className="form-label fw-bold text-light">First Name</label>
                 <div className="input-group mb-3">
                     <input type="text" className="form-control" placeholder="Enter your first name" aria-label="Username" id="phone" required
-                        onChange={
-                            e=> {
-                            userInfo.first_name = e.target.value
-                            //console.log(userInfo.name)
-                            }
-                        }
+                        name = "first_name" value= {userInfo.first_name}  onChange={inpuntHandling}
                     />
                     <div className="valid-feedback"></div>
                 </div>
@@ -85,19 +79,13 @@ export const RegisterUser = () => {
                 <label for="Last name" className="form-label fw-bold text-light">Last Name</label>
                 <div className="input-group mb-3">
                     <input type="text" className="form-control" placeholder="Enter your last name" aria-label="Username" id="address" required
-                    
-                    onChange={
-                        e=> {
-                        userInfo.last_name = e.target.value
-                        //console.log(userInfo.name)
-                        }
-                    }/>
+                    name = "last_name" value= {userInfo.last_name}  onChange={inpuntHandling}
+                    />
                     <div className="valid-feedback"></div>
                 </div>
 
-                <button className='w-100 bg-primary' style={{border: "none", height: "40px","border-radius": "5px"}} type="submit"
-                    onClick={() => registerUser(userInfo)}
-                ><div className='text-light fw-bold'>save</div></button>
+                <button className='w-100 bg-primary' style={{border: "none", height: "40px","border-radius": "5px"}} type="submit">
+                    <div className='text-light fw-bold'>save</div></button>
                 <Link to="/login">Or get back to login</Link>
             </form>
         </div>
