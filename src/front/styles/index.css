@@ -1,3 +1,11 @@
 /* 
     General Styles used on every website (Don't Repeat Yourself)
 */
+body{
+    background-color: rgb(45, 45, 65);
+}
+
+nav {
+    background-color: rgba(20, 20, 29, 0.445);
+}
+

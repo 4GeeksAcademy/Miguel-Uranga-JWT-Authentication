@@ -2,23 +2,24 @@
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
 import os, json
-from flask import Flask, request, jsonify, url_for, Blueprint, JWTManager
-from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
+from flask import Flask, request, jsonify, url_for, Blueprint
+from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity, JWTManager
 from api.models import db, User
 from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
 
 api = Blueprint('api', __name__)
 
-api.config["JWT_SECRETE_KEY"] = "A*SJR*89432Jk1l2@"
-jwt = JWTManager(api)
-
 # Allow CORS requests to this API
 CORS(api)
 
-@api.route('/')
-def sitemap():
-    return generate_sitemap(api)
+# @api.route('/')
+# def sitemap():
+#     return generate_sitemap(api)
+@api.route('/welcome', methods =['GET'])
+def user_welcome():
+    return jsonify({"msg": "Hola!"}), 200
+
 
 
 @api.route('/signup', methods=['POST'])
@@ -34,6 +35,11 @@ def user_signup():
 
     if not response_body:
         return jsonify({"msg": "There was no information provided"}), 401
+    
+
+    user = User.query.filter_by(username=new_User.username).first()
+    if user:
+        return jsonify({"msg": "This user already exists"}), 401
 
     db.session.add(new_User)
     db.session.commit()
@@ -42,7 +48,7 @@ def user_signup():
     return jsonify({"msg": f"Created user: {serialized_user}"}), 200
 
 #Creation of the JWT authentication token 
-@api.route("/token", methods = ["POST"])
+@api.route("/login", methods = ["POST"])
 def token_generation():
     username = request.json.get("username", None)
     password = request.json.get("password", None)
@@ -52,16 +58,17 @@ def token_generation():
     if not user:
         return jsonify({"msg": "There was an error. Incorrect username or password"}), 401
     
-    access_token = create_access_token(identity=user.id)
-    return jsonify({"token": access_token, "user_id":user.username})
+    access_token = create_access_token(identity=username)
+    return jsonify({"token": access_token, "user_id":user.username}), 200
 
-
-@api.route("/login", methods = ["GET"])
+#Authenticating the user
+@api.route("/access", methods = ["GET"])
 @jwt_required()
 def user_logon():
     current_user = get_jwt_identity()
-    user = User.query.get(current_user)
-    if not user:
-        return jsonify({"msg": "The previously authenticated user does not exist anymore."}), 401
+    user = User.query.filter_by(username = current_user).first()
 
-    return jsonify({"id": user.id, "username": user.username }), 200
+    # if not user:
+    #     return jsonify({"msg": "The previously authenticated user does not exist anymore."}), 401
+
+    return jsonify(logged_in= current_user), 200
