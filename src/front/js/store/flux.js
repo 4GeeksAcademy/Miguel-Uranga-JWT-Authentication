@@ -4,6 +4,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 	return {
 		store: {
 			message: null,
+			user: {},
 			demo: [
 				{
 					title: "FIRST",
@@ -56,7 +57,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 			},
 			registerUser: async (userInfo) => {
 				//Post the user data
-				let msgError = ""
 				try {
 					const response = await fetch(process.env.BACKEND_URL + "/api/signup", {
 						method: "POST",
@@ -89,12 +89,18 @@ const getState = ({ getStore, getActions, setStore }) => {
 					})
 					
 					const data = await response.json()
+
+					if(!data){
+						return -1
+					}
 	
-					console.log(data[1])
+					console.log(data)
+					setStore({user:data})
 					return data[1];
 				}
 				catch(error){
 					console.log(error)
+					return error
 				}
 			}
 		}

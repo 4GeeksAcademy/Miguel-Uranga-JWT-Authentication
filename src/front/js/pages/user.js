@@ -29,7 +29,9 @@ export const User = () => {
     useEffect(() => {
         const response = async () => {
             let information = await actions.getUserInfo()
-           console.log(response)
+            if(information == -1){
+                navigate('/login')
+            }
             setUserInfo(prevUser => (
             {
                 ...prevUser,
@@ -37,16 +39,14 @@ export const User = () => {
             last_name: information.last_name
         }))
         }
-        localStorage.access_token == "" ? navigate('/login'): false
-        response()
-        
+        localStorage.access_token ? response() : navigate("/login")
     }
     , [])
 
     const logginOut = () =>{
-        localStorage.access_token = ""
+        localStorage.removeItem('access_token')
+        localStorage.removeItem('username')
         navigate("/login")
-
     }
 
     return (<>

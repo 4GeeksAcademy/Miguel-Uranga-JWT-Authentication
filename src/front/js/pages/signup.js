@@ -47,7 +47,7 @@ export const RegisterUser = () => {
             <form className="row g-3 needs-validation" onSubmit={userInfoSubmit} novalidate>
                 <label for="full_Name" className="form-label fw-bold text-light">Username</label>
                 <div className="input-group mb-3">
-                    <input type="text" className="form-control" placeholder="Enter your username" aria-label="Username" id="full_Name" required
+                    <input type="email" className="form-control" placeholder="Enter your username" aria-label="Username" id="full_Name" required
                         name = "username" value= {userInfo.username}  onChange={inpuntHandling}
                     />
                     <div className="valid-feedback"></div>
@@ -85,7 +85,7 @@ export const RegisterUser = () => {
                 </div>
 
                 <button className='w-100 bg-primary' style={{border: "none", height: "40px","border-radius": "5px"}} type="submit">
-                    <div className='text-light fw-bold'>save</div></button>
+                    <div className='text-light fw-bold'>Sign Up</div></button>
                 <Link to="/login">Or get back to login</Link>
             </form>
         </div>

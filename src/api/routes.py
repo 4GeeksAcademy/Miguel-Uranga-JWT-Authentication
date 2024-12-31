@@ -65,13 +65,15 @@ def token_generation():
     return jsonify({"token": access_token, "username":user.username}), 200
 
 #Authenticating the user
-@api.route("/access/", methods = ["GET"])
+@api.route("/access", methods = ["GET"])
 @jwt_required()
 def user_logon():
     current_user = get_jwt_identity()
+    print(current_user)
     user = User.query.filter_by(username = current_user).first()
 
-    # if not user:
-    #     return jsonify({"msg": "The previously authenticated user does not exist anymore."}), 401
+    if not user:
+        return jsonify({"msg": "The previously authenticated user does not exist anymore."}), 401
+    
     serialized_user = User.serialize(user)
     return jsonify("User_info", serialized_user), 200
