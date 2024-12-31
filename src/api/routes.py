@@ -65,7 +65,7 @@ def token_generation():
     return jsonify({"token": access_token, "username":user.username}), 200
 
 #Authenticating the user
-@api.route("/access", methods = ["GET"])
+@api.route("/access/", methods = ["GET"])
 @jwt_required()
 def user_logon():
     current_user = get_jwt_identity()
