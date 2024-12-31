@@ -36,7 +36,7 @@ export const UserLogin = () => {
             {
                 ...prevInfo, [name]:value
             }));
-        console.log(data);
+        //console.log(data);
     }
     // useEffect(
 
@@ -45,17 +45,12 @@ export const UserLogin = () => {
     const loginUserHandling = async(e) => {
         e.preventDefault()
         let response = await actions.loginAccount(data.username, data.password)
-        console.log(response)
+        //console.log(response)
         response.msg ? alert(response.msg): navigate("/user")
     }
 
     return (
             <div className='container-fluid w-25 border-secondary' style={customMargins}>
-                    <div className= "col d-flex justify-content-center">
-                        <img src={StareFace} className="img-thumbnail" alt="..." style={imgStyle}></img>
-                    </div>
-                    
-                    
                     <form  onSubmit={loginUserHandling}>
                         <label for="full_Name" className="form-label fw-bold text-light">Username</label>
                         <div className="row mb-3">
@@ -77,6 +72,8 @@ export const UserLogin = () => {
 
                     </form>
                     <Link to="/signup" className = "text-primary">Don't have an account? Sign-up!</Link>
+
+                    
          
             </div>
         )

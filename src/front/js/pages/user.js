@@ -1,5 +1,5 @@
 import React, {useState, useEffect, useContext} from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {Context} from '../store/appContext.js'
 import StareFace from '../../img/stare.png'
 
@@ -20,37 +20,55 @@ const imgStyle = {
 
 export const User = () => {
     const { store, actions } = useContext(Context);
-    const [data, setData] = useState({
-        username: "",
-        password: "",
-      });
+    const navigate = useNavigate()
+    const [userInfo, setUserInfo] = useState({
+            first_name: "",
+            last_name: "",
+          });
 
-
-    //getting the user values
-    const inpuntHandling = e => {
-        e.preventDefault()
-        const {name, value} = e.target;
-        setData(prevInfo => (
+    useEffect(() => {
+        const response = async () => {
+            let information = await actions.getUserInfo()
+           console.log(response)
+            setUserInfo(prevUser => (
             {
-                ...prevInfo, [name]:value
-            }));
-        console.log(data);
+                ...prevUser,
+            first_name: information.first_name,
+            last_name: information.last_name
+        }))
+        }
+        response()
+        
+    }
+    , [])
+
+    const logginOut = () =>{
+        localStorage.access_token = ""
+        navigate("/login")
+
     }
 
-
-    const loginUserHandling = (e) => {
-        e.preventDefault()
-        actions.loginAccount(data.username, data.password)
-    }
-
-    return (
-            <div className='container-fluid w-25 border-secondary' style={customMargins}>
+    return (<>
+        <div className='container-fluid w-25 border-secondary' style={customMargins}>
                     <div className= "col d-flex justify-content-center">
                         <img src={StareFace} className="img-thumbnail" alt="..." style={imgStyle}></img>
                     </div>
-                    <label for="full_Name" className="form-label fw-bold text-light">Welcome, {localStorage.username}</label>
-                        
-         
+                    <div className="row">
+                        <label for="full_Name" className="form-label fw-bold text-light text-center">Welcome, {localStorage.username}</label>
+                    </div>
+                    
+                    <div className="row">
+                        <label for="full_Name" className="form-label fw-bold text-light text-center">First Name: {userInfo.first_name}</label>
+                    </div>
+
+                    <div className="row">
+                        <label for="full_Name" className="form-label fw-bold text-light text-center">Last Name: {userInfo.last_name}</label>
+                    </div>
+
+                    <button className='w-100 bg-primary' style={{border: "none", height: "40px","border-radius": "5px"}} onClick={logginOut}>
+                    <div className='text-light fw-bold'>Log Out</div></button>
             </div>
+            
+        </> 
         )
 }

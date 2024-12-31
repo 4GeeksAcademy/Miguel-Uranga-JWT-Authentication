@@ -16,9 +16,6 @@ CORS(api)
 # @api.route('/')
 # def sitemap():
 #     return generate_sitemap(api)
-@api.route('/welcome', methods =['GET'])
-def user_welcome():
-    return jsonify({"msg": "Hola!"}), 200
 
 
 
@@ -65,7 +62,7 @@ def token_generation():
         return jsonify({"msg": "There was an error. Incorrect username or password"}), 401
     
     access_token = create_access_token(identity=username)
-    return jsonify({"token": access_token, "user_id":user.username}), 200
+    return jsonify({"token": access_token, "username":user.username}), 200
 
 #Authenticating the user
 @api.route("/access", methods = ["GET"])
@@ -76,5 +73,5 @@ def user_logon():
 
     # if not user:
     #     return jsonify({"msg": "The previously authenticated user does not exist anymore."}), 401
-
-    return jsonify(logged_in= current_user), 200
+    serialized_user = User.serialize(user)
+    return jsonify("User_info", serialized_user), 200

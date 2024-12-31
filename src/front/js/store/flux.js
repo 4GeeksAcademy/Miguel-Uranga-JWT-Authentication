@@ -76,9 +76,26 @@ const getState = ({ getStore, getActions, setStore }) => {
 					return data;
 				}
 				catch(error){
-					console.log(response)
+					console.log(error)
 				}
 
+			},
+			getUserInfo: async () => {
+				try {
+					const response = await fetch(process.env.BACKEND_URL + "/api/access", {
+						headers: {
+							"Authorization": `Bearer ${localStorage.access_token}`
+						}
+					})
+					
+					const data = await response.json()
+	
+					console.log(data[1])
+					return data[1];
+				}
+				catch(error){
+					console.log(error)
+				}
 			}
 		}
 	};
