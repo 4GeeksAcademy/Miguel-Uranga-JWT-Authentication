@@ -37,6 +37,7 @@ export const User = () => {
             last_name: information.last_name
         }))
         }
+        localStorage.access_token == "" ? navigate('/login'): false
         response()
         
     }
