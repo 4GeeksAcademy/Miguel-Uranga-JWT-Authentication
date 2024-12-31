@@ -22,6 +22,7 @@ export const UserLogin = () => {
     let navigate = useNavigate()
     let response = {}
     const { store, actions } = useContext(Context);
+    //console.log(store.user)
     const [data, setData] = useState({
         username: "",
         password: "",

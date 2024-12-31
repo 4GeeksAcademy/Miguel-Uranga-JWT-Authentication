@@ -20,8 +20,9 @@ const getState = ({ getStore, getActions, setStore }) => {
 		},
 		actions: {
 			// Use getActions to call a function within a fuction
-			exampleFunction: () => {
-				getActions().changeColor(0, "green");
+			logOutProcess: async() => {
+				await setStore({user:{}})
+				//console.log(getStore())
 			},
 
 			loginAccount: async (username, password) => {
@@ -94,7 +95,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 						return -1
 					}
 	
-					console.log(data)
+					//console.log(data)
 					setStore({user:data})
 					return data[1];
 				}

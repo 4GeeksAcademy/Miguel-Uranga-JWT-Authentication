@@ -32,11 +32,12 @@ export const User = () => {
             if(information == -1){
                 navigate('/login')
             }
+            console.log(store.user)
             setUserInfo(prevUser => (
             {
                 ...prevUser,
-            first_name: information.first_name,
-            last_name: information.last_name
+            first_name: store.user[1].first_name,
+            last_name: store.user[1].last_name
         }))
         }
         localStorage.access_token ? response() : navigate("/login")
@@ -46,6 +47,7 @@ export const User = () => {
     const logginOut = () =>{
         localStorage.removeItem('access_token')
         localStorage.removeItem('username')
+        actions.logOutProcess();
         navigate("/login")
     }
 
