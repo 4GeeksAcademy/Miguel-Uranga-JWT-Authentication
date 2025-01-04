@@ -29,6 +29,7 @@ export const RegisterUser = () => {
             return -1
         }
         response = await actions.registerUser(userInfo)
+        console.log(response)
         response.msg ? alert(response.msg): navigate("/successful")
          
     }

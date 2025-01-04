@@ -22,6 +22,14 @@ CORS(api)
 @api.route('/signup', methods=['POST'])
 def user_signup():
     response_body = json.loads(request.data)
+
+    user = User.query.filter_by(username=response_body["username"]).first()
+    print(user)
+
+    if user:
+        return jsonify({"msg": "This user already exists"}), 401
+    
+
     new_User = User(
         username = response_body["username"],
         password = current_app.bcrypt.generate_password_hash(response_body["password"]).decode('utf-8'),
@@ -34,10 +42,7 @@ def user_signup():
         return jsonify({"msg": "There was no information provided"}), 401
     
 
-    user = User.query.filter_by(username=new_User.username).first()
-
-    if user:
-        return jsonify({"msg": "This user already exists"}), 401
+    
 
     db.session.add(new_User)
     db.session.commit()
